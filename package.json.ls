@@ -1,5 +1,5 @@
 name    : \livescript-middleware
-version : \0.5
+version : \0.5.0
 
 description : 'Connect middleware for LiveScript'
 
