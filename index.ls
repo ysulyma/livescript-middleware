@@ -67,11 +67,14 @@ module.exports = (options = {}) ->
       fs.read-file ls-path, \utf8, (err, str) ->
         return error err if err
         
-        js = options.compile str, {}
-        
-        mkdirp dirname(js-path), 8~700, (err) ->
-          return error err if err
-          fs.write-file js-path, js, \utf8, next
+        try
+          js = options.compile str, {}
+          
+          mkdirp dirname(js-path), 8~700, (err) ->
+            return error err if err
+            fs.write-file js-path, js, \utf8, next
+        catch e
+          console.error "#{e.name} in #{ls-path}: #{e.message}"
     
     # Compare mtimes
     fs.stat ls-path, (err, ls-stats) ->
