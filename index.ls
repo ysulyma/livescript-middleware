@@ -16,15 +16,23 @@ require! {
   mkdirp
   path.join
   path.sep
+
+  UglifyJS: \uglify-js
 }
+
+const defaults =
+  compress: false
 
 module.exports = (options = {}) ->
   # Accept src/dest dir
   if typeof options == \string
     options = src: options
     
+  # defaults
+  options = defaults <<< options
+    
   # extract options
-  {dest, force, src} = options
+  {dest, src} = options
   
   # Source dir required
   throw new Error 'livescript.middleware() requires "src" directory' unless src?
@@ -60,21 +68,7 @@ module.exports = (options = {}) ->
       next if err.code == \ENOENT then null else err
 
     # force
-    return compile! if force
-    
-    # compile to jsPath
-    compile = ->
-      fs.read-file ls-path, \utf8, (err, str) ->
-        return error err if err
-        
-        try
-          js = options.compile str, {}
-          
-          mkdirp dirname(js-path), 8~700, (err) ->
-            return error err if err
-            fs.write-file js-path, js, \utf8, next
-        catch e
-          console.error "#{e.name} in #{ls-path}: #{e.message}"
+    return compile! if options.force
     
     # Compare mtimes
     fs.stat ls-path, (err, ls-stats) ->
@@ -90,6 +84,23 @@ module.exports = (options = {}) ->
             compile!
           else
             next!
+
+    # compile to jsPath
+    function compile
+      fs.read-file ls-path, \utf8, (err, str) ->
+        return error err if err
+        
+        try
+          js = options.compile str, {}
+          
+          if options.compress
+            js = UglifyJS.minify js, {+from-string} .code
+          
+          mkdirp dirname(js-path), 8~700, (err) ->
+            return error err if err
+            fs.write-file js-path, js, \utf8, next
+        catch err
+          error err
 
 function array-contains (haystack, needle)
   -1 != haystack.index-of needle
