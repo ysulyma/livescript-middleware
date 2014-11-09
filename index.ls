@@ -7,17 +7,13 @@
  * Module dependencies.
  */
 require! {
-  livescript: \LiveScript
-  
+  'uglify-js': {minify}
+  LiveScript: livescript
+
   fs
   url
-  path.basename
-  path.dirname
+  path: {join, sep, dirname}
   mkdirp
-  path.join
-  path.sep
-
-  UglifyJS: \uglify-js
 }
 
 const defaults =
@@ -27,31 +23,31 @@ module.exports = (options = {}) ->
   # Accept src/dest dir
   if typeof options == \string
     options = src: options
-    
+
   # defaults
   options = defaults <<< options
-    
+
   # extract options
   {dest, src} = options
-  
+
   # Source dir required
   throw new Error 'livescript.middleware() requires "src" directory' unless src?
 
   # Default dest dir to source
   dest ||= src
-  
+
   # Default compile callback
   options.compile ||= (str, path) ->
     livescript.compile str, options{bare}
-  
+
   # Middleware
   return (req, res, next) ->
     return next! unless array-contains <[ GET HEAD ]> req.method
-    
+
     path = url.parse req.url .pathname
-    
+
     return next! unless /\.js$/.test path
-    
+
     if array-contains <[ string function ]> typeof dest
       # check for dest-path overlap
       overlap = compare do
@@ -59,21 +55,21 @@ module.exports = (options = {}) ->
         path
 
       path = path.slice overlap.length
-      
+
     js-path = if typeof dest == \function then dest path else join dest, path
     ls-path = if typeof src == \function then src path else join src, path.replace \.js \.ls
-    
+
     # Ignore ENOENT to fall through as 404
     error = (err) ->
       next if err.code == \ENOENT then null else err
 
     # force
     return compile! if options.force
-    
+
     # Compare mtimes
     fs.stat ls-path, (err, ls-stats) ->
       return error err if err
-      
+
       fs.stat js-path, (err, js-stats) ->
         # JS has not been compiled, compile it!
         if err
@@ -89,13 +85,13 @@ module.exports = (options = {}) ->
     function compile
       fs.read-file ls-path, \utf8, (err, str) ->
         return error err if err
-        
+
         try
           js = options.compile str, {}
-          
+
           if options.compress
-            js = UglifyJS.minify js, {+from-string} .code
-          
+            js = minify js, {+from-string} .code
+
           mkdirp dirname(js-path), 8~700, (err) ->
             return error err if err
             fs.write-file js-path, js, \utf8, next
