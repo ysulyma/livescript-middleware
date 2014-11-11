@@ -1,6 +1,7 @@
 {
   "name": "livescript-middleware",
-  "version": "0.7.0",
+  "version": "1.0.0",
+  "main": "index.ls",
   "description": "Connect middleware for LiveScript",
   "keywords": [
     "livescript",
@@ -20,8 +21,8 @@
     "url": "git://github.com/yuri0/livescript-middleware.git"
   },
   "dependencies": {
-    "LiveScript": "*",
-    "mkdirp": "0.3.x",
+    "LiveScript": ">=1.3.1",
+    "mkdirp": "0.5.x",
     "uglify-js": "^2.4.13"
   }
 }
