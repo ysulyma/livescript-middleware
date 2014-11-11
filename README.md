@@ -6,7 +6,7 @@ Check out **[livescript.net](http://livescript.net)** for more information, exam
 ### Middleware Usage
     require! {
       express
-      livescript-middleware: \livescript-middleware
+      \livescript-middleware : livescript-middleware
     }
     /* ... */
     app = express!
