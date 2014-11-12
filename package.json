@@ -9,6 +9,13 @@
     "connect"
   ],
   "author": "Yuri Sulyma <yuri.sulyma@gmail.com>",
+  "contributors": [
+    {
+      "name": "Alex Gorbatchev",
+      "email": "",
+      "url": "https://github.com/alexgorbatchev"
+    }
+  ],
   "bugs": "https://github.com/yuri0/livescript-middleware/issues",
   "licenses": [
     {
