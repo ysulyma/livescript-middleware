@@ -28,7 +28,7 @@
     "url": "git://github.com/yuri0/livescript-middleware.git"
   },
   "dependencies": {
-    "LiveScript": ">=1.4.0",
+    "livescript": ">=1.4.0",
     "mkdirp": "^0.5.1",
     "uglify-js": "^2.5.0"
   }
