@@ -8,7 +8,7 @@
  */
 require! {
   'uglify-js': {minify}
-  LiveScript: livescript
+  livescript
 
   fs
   url
